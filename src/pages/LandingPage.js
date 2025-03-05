@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Chat from "./ChatPage"
 const LandingPage = () => {
   const [step, setStep] = useState(0);
 
@@ -42,19 +42,7 @@ const LandingPage = () => {
       )}
 
       {step === 1 && (
-        // 두 번째 화면 (다음 화면)
-        <div className="w-full flex flex-col items-center justify-center h-full text-white">
-          <h2 className="text-3xl font-bold">다음 화면</h2>
-          <p className="text-lg mt-2">이제 새로운 내용을 볼 수 있어요!</p>
-
-          {/* 이전 화면으로 돌아가는 버튼 */}
-          <button
-            className="mt-6 bg-white text-black font-bold py-3 px-6 rounded-lg shadow-md"
-            onClick={() => setStep(0)}
-          >
-            뒤로 가기
-          </button>
-        </div>
+        <Chat></Chat>
       )}
     </>
   );

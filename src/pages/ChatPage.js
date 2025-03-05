@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import {
   FiPhoneCall,
   FiArrowLeft,
@@ -8,6 +9,10 @@ import {
 } from "react-icons/fi";
 
 const ChatPage = () => {
+  const location = useLocation();
+  const { email, schoolName, grade, classNumber, studentName } =
+    location.state || {};
+
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null); // 이미지 상태 추가

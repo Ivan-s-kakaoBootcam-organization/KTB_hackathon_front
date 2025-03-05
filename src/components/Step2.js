@@ -1,9 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 훅
 
-const Step2 = ({ studentName, setStudentName, onPrev }) => {
-  const navigate = useNavigate();
-
+const Step2 = ({ studentName, setStudentName, onPrev, onNext }) => {
   return (
     <div className="w-full h-[100vh] flex flex-col bg-white px-6 py-8">
       {/* 뒤로 가기 버튼 */}
@@ -42,7 +39,7 @@ const Step2 = ({ studentName, setStudentName, onPrev }) => {
             : "bg-gray-200 text-gray-400 cursor-not-allowed"
         }`}
         disabled={!studentName}
-        onClick={() => navigate("/chat")} // "/final" 페이지로 이동
+        onClick={onNext}
       >
         다음
       </button>

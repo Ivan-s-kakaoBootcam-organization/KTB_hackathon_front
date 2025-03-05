@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Step0 from "../components/Step0";
 import Step1 from "../components/Step1";
 import Step2 from "../components/Step2";
@@ -9,6 +10,24 @@ const LandingPage = () => {
   const [schoolName, setSchoolName] = useState("");
   const [grade, setGrade] = useState("");
   const [classNumber, setClassNumber] = useState("");
+  const [studentName, setStudentName] = useState("");
+  const navigate = useNavigate();
+
+  const handleNextStep = () => {
+    if (step === 2) {
+      navigate("/chat", {
+        state: {
+          email,
+          schoolName,
+          grade,
+          classNumber,
+          studentName,
+        },
+      });
+    } else {
+      setStep(step + 1);
+    }
+  };
 
   return (
     <>
@@ -29,11 +48,10 @@ const LandingPage = () => {
       )}
       {step === 2 && (
         <Step2
-          email={email}
-          schoolName={schoolName}
-          grade={grade}
-          classNumber={classNumber}
+          studentName={studentName}
+          setStudentName={setStudentName}
           onPrev={() => setStep(1)}
+          onNext={handleNextStep}
         />
       )}
     </>

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom"; // 페이지 이동을 위한 훅
 
-const Step2 = ({ onPrev }) => {
-  const [studentName, setStudentName] = useState(""); // 학생 이름 상태 관리
+const Step2 = ({ studentName, setStudentName, onPrev }) => {
   const navigate = useNavigate();
 
   return (

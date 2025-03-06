@@ -8,6 +8,7 @@ import happyEmoji from "../assets/icons/Image-2.svg";
 // import noEmoji from "../assets/icons/Image-3.svg";
 import hereEmoji from "../assets/icons/Image.svg";
 import LoadingBubble from "../components/LoadingBubble";
+import PaperPlaneAnimation from "../components/emailDone";
 
 // 말풍선 컴포넌트
 const ChatBubble = ({ sender, text, type, image, isHtml }) => {
@@ -51,7 +52,7 @@ const ChatBubble = ({ sender, text, type, image, isHtml }) => {
 };
 
 // 종료 시 호출되는 메시지 컴포넌트
-const LastMessage = ({ onGoodClick, onBadClick }) => {
+const LastMessage = ({ onGoodClick, onBadClick, isLoading, setLoading }) => {
   return (
     <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
       {/* 이모지 */}
@@ -66,13 +67,19 @@ const LastMessage = ({ onGoodClick, onBadClick }) => {
         <div className="flex gap-3 mt-3">
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={onGoodClick}
+            onClick={() => {
+              onGoodClick();
+            }}
+            disabled={isLoading}
           >
             해결됐어요!
           </button>
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={onBadClick}
+            onClick={() => {
+              onBadClick();
+            }}
+            disabled={isLoading}
           >
             대화가 필요해요
           </button>
@@ -83,7 +90,7 @@ const LastMessage = ({ onGoodClick, onBadClick }) => {
 };
 
 // 요청 시 호출되는 메시지 컴포넌트
-const RequestMessage = ({ setRequestType }) => {
+const RequestMessage = ({ setRequestType, isLoading }) => {
   return (
     <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
       {/* 이모지 */}
@@ -91,24 +98,30 @@ const RequestMessage = ({ setRequestType }) => {
 
       {/* 메시지 컨텐츠 */}
       <div className="flex flex-col">
-        <p className="font-bold text-black">안내 드립니다.</p>
+        <p className="font-bold text-black">안내드립니다.</p>
         <p className="text-gray-600 text-sm">
-          선생님께 연락을 드리겠다.
+          선생님께 연락 드릴게요!
           <br />
-          어떻게 하실런지
+          어떤 방법으로 연락 드릴까요?
         </p>
 
         {/* 버튼 그룹 */}
         <div className="flex gap-3 mt-3">
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={() => setRequestType("전화")}
+            onClick={() => {
+              setRequestType("전화");
+            }}
+            disabled={isLoading}
           >
             전화
           </button>
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={() => setRequestType("문자")}
+            onClick={() => {
+              setRequestType("문자");
+            }}
+            disabled={isLoading}
           >
             개인면담
           </button>
@@ -129,6 +142,7 @@ const ChatPage = () => {
   const [requestType, setRequestType] = useState(""); // 학부모 요청 타입
   const [endOfChat, setEndOfChat] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showAnimation, setShowAnimation] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -308,6 +322,9 @@ const ChatPage = () => {
 
   const processChat = async () => {
     const convo = saveMessagesToVariable();
+    setLoading(true);
+    setShowAnimation(true);
+
     // 대화 내용 요약 API 호출
     const summarizedResponse = await fetch(
       "http://54.180.120.69:3001/api/summarize-conversation",
@@ -365,18 +382,6 @@ const ChatPage = () => {
     formData.append("teacherEmail", email);
     formData.append("image", image);
 
-    console.log(
-      JSON.stringify({ grade, class: classNumber, name: studentName }),
-      JSON.stringify(convo),
-      classifiedData.status,
-      requestType,
-      JSON.stringify({
-        topic: summarizedData.summary.topic,
-        keyPoints: summarizedData.summary.keyPoints,
-      }),
-      email
-    );
-
     const emailResponse = await fetch(
       "http://54.180.120.69:3001/api/send-email",
       {
@@ -391,12 +396,21 @@ const ChatPage = () => {
 
     console.log(emailData);
 
-    setEndOfChat(true);
+    setLoading(false);
+    setTimeout(() => {
+      setShowAnimation(false);
+      setEndOfChat(true);
+    }, 1000);
     return;
   };
 
   return (
     <div className="fixed inset-0 flex flex-col items-center overflow-hidden">
+      {showAnimation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <PaperPlaneAnimation />
+        </div>
+      )}
       {/* 채팅 컨테이너 */}
       <div className="relative w-full max-w-[390px] h-screen flex flex-col shadow-lg bg-sky-200">
         {/* 헤더 */}
@@ -421,9 +435,16 @@ const ChatPage = () => {
                 key={msg.id}
                 onGoodClick={() => processChat()}
                 onBadClick={() => showRequestMessage()}
+                isLoading={loading}
+                setLoading={setLoading}
               />
             ) : msg.type === "request" ? (
-              <RequestMessage key={msg.id} setRequestType={setRequestType} />
+              <RequestMessage
+                key={msg.id}
+                setRequestType={setRequestType}
+                isLoading={loading}
+                setLoading={setLoading}
+              />
             ) : (
               <ChatBubble
                 key={msg.id}

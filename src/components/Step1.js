@@ -16,11 +16,6 @@ const Step1 = ({
 
   return (
     <div className="w-full h-[100vh] flex flex-col bg-transparent px-6 py-8">
-      {/* 뒤로 가기 버튼 */}
-      <button className="text-2xl absolute top-14 left-4" onClick={onPrev}>
-        ←
-      </button>
-
       {/* 제목 */}
       <h2 className="text-2xl font-bold text-black mt-40">
         학적 정보를 입력 해주세요
@@ -42,9 +37,9 @@ const Step1 = ({
           <option value="오라 초등학교">오라 초등학교</option>
         </select>
         <p
-          className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${schoolName ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${schoolName ? "opacity-0 invisible" : "opacity-100 visible"}`}
         >
-          ❗ 학교를 선택해 주세요
+          학교를 선택해 주세요
         </p>
       </div>
 
@@ -67,9 +62,9 @@ const Step1 = ({
             ))}
           </select>
           <p
-            className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${grade ? "opacity-0 invisible" : "opacity-100 visible"}`}
+            className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${grade ? "opacity-0 invisible" : "opacity-100 visible"}`}
           >
-            ❗ 학년을 선택해 주세요
+            학년을 선택해 주세요
           </p>
         </div>
 
@@ -90,9 +85,9 @@ const Step1 = ({
             ))}
           </select>
           <p
-            className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${classNumber ? "opacity-0 invisible" : "opacity-100 visible"}`}
+            className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${classNumber ? "opacity-0 invisible" : "opacity-100 visible"}`}
           >
-            ❗ 반을 선택해 주세요
+            반을 선택해 주세요
           </p>
         </div>
       </div>

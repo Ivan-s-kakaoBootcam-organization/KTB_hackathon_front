@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import SendButton from "./SendButton";
+import LogoImage from "../assets/images/Logo.png";
 
 const Step0 = ({ email, setEmail, onNext }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -27,20 +28,8 @@ const Step0 = ({ email, setEmail, onNext }) => {
 
   return (
     <div className="relative w-full h-[100vh] flex flex-col justify-between items-center p-10">
-      {/* 헤더 */}
-      <div className="flex flex-col items-start w-full px-4 mt-40">
-        <h2
-          className="text-8xl font-black tracking-wide"
-          style={{ fontFamily: '"Fredoka", sans-serif' }}
-        >
-          <span className="text-blue-700">M</span>
-          <span className="text-white">IN</span>
-          <span className="text-blue-700">Z</span>
-          <span className="text-white">I</span>
-        </h2>
-        <p className="text-gray-200 mt-1 w-full px-5.5 text-lg">
-          학부모 맞춤 민원 대응 챗봇
-        </p>
+      <div className="flex justify-center items-center h-[70%]">
+        <img src={LogoImage} alt="Logo" className="" />
       </div>
 
       {/* 이메일 입력 */}

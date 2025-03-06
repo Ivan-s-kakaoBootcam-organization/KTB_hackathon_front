@@ -102,23 +102,19 @@ const ChatPage = () => {
   return (
     <div className="fixed inset-0 flex flex-col items-center overflow-hidden">
       {/* 채팅 컨테이너 */}
-      <div className="relative w-full max-w-[390px] h-screen flex flex-col shadow-lg bg-gradient-to-r from-orange-400 via-yellow-300 to-red-400 animate-gradient">
-        {/* 헤더 (뒤로 가기 버튼 추가) */}
-        <div className="fixed top-0 w-full max-w-[390px] bg-black text-white py-4 px-5 flex items-center justify-between shadow-md z-10">
-          {/* 뒤로 가기 버튼 */}
-          <button
-            onClick={() => window.history.back()}
-            className="text-white text-xl"
-          >
-            <FiArrowLeft />
-          </button>
-          <div className="text-center flex-1">
-            <h1 className="text-lg font-bold">이도초등학교 1학년 1반</h1>
-            <span className="text-sm text-gray-400">000 학부모</span>
+      <div className="relative w-full max-w-[390px] h-screen flex flex-col shadow-lg bg-sky-200">
+        {/* 헤더 */}
+        <div className="fixed top-0 w-full max-w-[390px] bg-transparent text-black py-4 px-5 flex items-start justify-start z-10">
+          <div className="flex flex-col ml-4">
+            <h1 className="text-lg font-bold text-black-800">
+              {schoolName}이도 초등학교
+            </h1>
+            <span className="text-gray-700 text-sm">
+              {grade}1학년 {classNumber}1반{studentName}{" "}
+              <span className="font-bold">이홍민 학부모</span>
+            </span>
           </div>
-          <div className="w-6"></div>
         </div>
-
         {/* 채팅창 */}
         <div className="flex-1 overflow-y-auto px-4 pt-[90px] pb-[120px]">
           {messages.map((msg, index) => (
@@ -150,7 +146,6 @@ const ChatPage = () => {
           ))}
           <div ref={messagesEndRef} />
         </div>
-
         {/* 이미지 미리보기 */}
         {image && (
           <div className="fixed bottom-20 w-full max-w-[390px] px-4 flex justify-between items-center bg-white shadow-md rounded-lg p-2">
@@ -160,15 +155,32 @@ const ChatPage = () => {
             </button>
           </div>
         )}
-
         {/* 입력창 */}
-        <div className="fixed bottom-0 w-full max-w-[390px] bg-white p-3 flex items-center border-t z-10">
-          {/* 이미지 업로드 버튼 */}
+        <div className="fixed bottom-0 w-full max-w-[390px] bg-white px-4 py-3 border-t z-10">
+          <div className="flex items-center gap-3 bg-gray-100 rounded-xl p-3 w-full">
+            {/* 입력창 */}
+            <textarea
+              ref={textareaRef}
+              rows="1"
+              placeholder="민지 선생님에게 의견을 들려주세요"
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              className="flex-1 bg-transparent text-gray-700 placeholder-gray-400 outline-none resize-none"
+            />
+
+            {/* 전송 버튼 */}
+            <button onClick={sendMessage} className="text-gray-600">
+              <FiSend size={20} />
+            </button>
+          </div>
+
+          {/* 파일 업로드 버튼 */}
           <button
             onClick={() => fileInputRef.current.click()}
-            className="text-gray-500 text-xl px-2"
+            className="ml-3 text-gray-600"
           >
-            <FiCamera />
+            📁
           </button>
           <input
             type="file"
@@ -177,24 +189,6 @@ const ChatPage = () => {
             className="hidden"
             onChange={handleImageUpload}
           />
-
-          <textarea
-            ref={textareaRef}
-            rows="1"
-            placeholder="메시지를 입력하세요..."
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            className="flex-1 px-4 py-3 border rounded-full outline-none text-gray-700 bg-black text-white placeholder-gray-400 resize-none overflow-hidden break-words"
-          />
-
-          {/* 전송 버튼 */}
-          <button
-            onClick={sendMessage}
-            className="ml-2 px-4 py-2 bg-blue-500 text-white rounded-full shadow-md border-2 border-orange-300 hover:bg-orange-500 transition"
-          >
-            <FiSend />
-          </button>
         </div>
       </div>
     </div>

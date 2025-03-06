@@ -36,9 +36,9 @@ const Step1 = ({
           <option value="" disabled>
             학교 이름 선택
           </option>
-          <option value="학교1">이도 초등학교</option>
-          <option value="학교2">도남 초등학교</option>
-          <option value="학교3">오라 초등학교</option>
+          <option value="이도 초등학교">이도 초등학교</option>
+          <option value="도남 초등학교">도남 초등학교</option>
+          <option value="오라 초등학교">오라 초등학교</option>
         </select>
         {!schoolName && (
           <p className="text-red-500 text-sm mt-1">❗ 학교를 선택해 주세요</p>

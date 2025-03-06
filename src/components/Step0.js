@@ -25,7 +25,7 @@ const Step0 = ({ email, setEmail, onNext }) => {
   };
 
   return (
-    <div className="w-full h-[100vh] flex flex-col justify-between items-center bg-gradient-to-b from-orange-400 to-orange-500 p-6">
+    <div className="w-full h-[100vh] flex flex-col justify-between items-center bg-gradient-to-b from-sky-300 to-sky-200 p-6">
       {/* 메인 컨텐츠 */}
       <div className="flex flex-col items-start w-full px-6 mt-40">
         <h2 className="text-white text-5xl font-bold">다르미</h2>

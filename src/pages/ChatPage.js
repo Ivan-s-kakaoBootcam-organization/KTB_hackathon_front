@@ -22,7 +22,7 @@ const ChatBubble = ({ sender, text, type, image }) => {
             <img src={emoji} alt="Avatar" className="w-8 h-8" />
           )}
           <div className="flex flex-col">
-            <p className="font-bold">{sender}</p>
+            {type !== "sent" && <p className="font-bold">{sender}</p>}
             <p className="text-sm leading-relaxed">{text}</p>
             {image && (
               <img
@@ -38,9 +38,40 @@ const ChatBubble = ({ sender, text, type, image }) => {
   );
 };
 
-const LastMessage = () => {
+const LastMessage = ({ onGoodClick, onBadClick }) => {
   return (
-    <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow">
+    <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
+      {/* 이모지 */}
+      <img src={emoji} alt="Emoji" className="w-8 h-8" />
+
+      {/* 메시지 컨텐츠 */}
+      <div className="flex flex-col">
+        <p className="font-bold text-black text-sm">
+          답변하신 내용은 만족스러우신가요?
+        </p>
+        {/* 버튼 그룹 */}
+        <div className="flex gap-3 mt-3">
+          <button
+            className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
+            onClick={onGoodClick}
+          >
+            해결됐어요!
+          </button>
+          <button
+            className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
+            onClick={onBadClick}
+          >
+            대화가 필요해요
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RequestMessage = () => {
+  return (
+    <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
       {/* 이모지 */}
       <img src={emoji} alt="Emoji" className="w-8 h-8" />
 
@@ -56,13 +87,13 @@ const LastMessage = () => {
         {/* 버튼 그룹 */}
         <div className="flex gap-3 mt-3">
           <button
-            className="px-4 py-2 bg-gray-200 rounded-full text-sm font-semibold shadow-sm"
+            className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
             onClick={() => alert("전화 연결")}
           >
             전화
           </button>
           <button
-            className="px-4 py-2 bg-gray-200 rounded-full text-sm font-semibold shadow-sm"
+            className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
             onClick={() => alert("문자 보내기")}
           >
             개인면담
@@ -113,7 +144,7 @@ const ChatPage = () => {
 
     const userMessage = {
       id: messages.length + 1,
-      sender: "",
+      sender: "나",
       text: input,
       image: image,
       type: "sent",
@@ -132,7 +163,11 @@ const ChatPage = () => {
       setTimeout(() => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { id: prevMessages.length + 2, type: "last" }, // LastMessage 추가
+          {
+            id: prevMessages.length + 1,
+            text: "답변하신 내용은 만족스러우신가요?",
+            type: "last",
+          },
         ]);
       }, 1000);
     } else {
@@ -182,6 +217,24 @@ const ChatPage = () => {
     }
   };
 
+  const showRequestMessage = () => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        id: prevMessages.length + 1,
+        text: "답변된 내용이 만족스럽지 않아 선생님께 연락드립니다.",
+        type: "request",
+      },
+    ]);
+  };
+
+  // 대화 내용을 변수에 저장하는 함수
+  const saveMessagesToVariable = () => {
+    const chatHistory = messages;
+    return JSON.stringify(chatHistory, null, 2);
+    // alert(JSON.stringify(chatHistory, null, 2)); // 대화 내용을 alert로 표시
+  };
+
   return (
     <div className="fixed inset-0 flex flex-col items-center overflow-hidden">
       {/* 채팅 컨테이너 */}
@@ -204,13 +257,20 @@ const ChatPage = () => {
         <div className="flex-1 overflow-y-auto px-4 pt-[90px] pb-[120px]">
           {messages.map((msg) =>
             msg.type === "last" ? (
-              <LastMessage key={msg.id} />
+              <LastMessage
+                key={msg.id}
+                onGoodClick={() => alert("종료합니다")}
+                onBadClick={() => showRequestMessage()}
+              />
+            ) : msg.type === "request" ? (
+              <RequestMessage key={msg.id} />
             ) : (
               <ChatBubble
                 key={msg.id}
                 sender={msg.sender}
                 text={msg.text}
                 type={msg.type}
+                image={msg.image}
               />
             )
           )}

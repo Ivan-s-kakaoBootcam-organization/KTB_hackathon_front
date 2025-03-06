@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import SendButton from "./SendButton";
 
 const Step1 = ({
   schoolName,
@@ -14,7 +15,7 @@ const Step1 = ({
   const isFormValid = schoolName && grade && classNumber;
 
   return (
-    <div className="w-full h-[100vh] flex flex-col bg-white px-6 py-8">
+    <div className="w-full h-[100vh] flex flex-col bg-transparent px-6 py-8">
       {/* 뒤로 가기 버튼 */}
       <button className="text-2xl absolute top-14 left-4" onClick={onPrev}>
         ←
@@ -29,7 +30,7 @@ const Step1 = ({
       <div className="mt-8">
         <label className="text-green-600 font-bold text-lg">학교 이름</label>
         <select
-          className="w-full border-b border-gray-400 outline-none mt-2 p-2"
+          className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
           value={schoolName}
           onChange={(e) => setSchoolName(e.target.value)}
         >
@@ -50,7 +51,7 @@ const Step1 = ({
         <div className="w-[48%]">
           <label className="text-green-600 font-bold text-lg">학년</label>
           <select
-            className="w-full border-b border-gray-400 outline-none mt-2 p-2"
+            className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
             value={grade}
             onChange={(e) => setGrade(e.target.value)}
           >
@@ -71,7 +72,7 @@ const Step1 = ({
         <div className="w-[48%]">
           <label className="text-green-600 font-bold text-lg">반</label>
           <select
-            className="w-full border-b border-gray-400 outline-none mt-2 p-2"
+            className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
             value={classNumber}
             onChange={(e) => setClassNumber(e.target.value)}
           >
@@ -91,17 +92,9 @@ const Step1 = ({
       </div>
 
       {/* 다음 버튼 */}
-      <button
-        className={`w-full py-3 mt-10 rounded-lg font-bold transition ${
-          isFormValid
-            ? "bg-green-500 text-white"
-            : "bg-gray-200 text-gray-400 cursor-not-allowed"
-        }`}
-        disabled={!isFormValid}
-        onClick={onNext}
-      >
-        다음
-      </button>
+      <div className="mt-20">
+        <SendButton text="다음" onClick={onNext} disabled={!isFormValid} />
+      </div>
     </div>
   );
 };

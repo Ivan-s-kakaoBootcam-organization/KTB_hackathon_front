@@ -30,7 +30,7 @@ const LandingPage = () => {
   };
 
   return (
-    <>
+    <div className="w-full h-[100vh] flex flex-col justify-between items-center bg-gradient-to-b from-sky-300 to-sky-200 p-6">
       {step === 0 && (
         <Step0 email={email} setEmail={setEmail} onNext={() => setStep(1)} />
       )}
@@ -54,7 +54,7 @@ const LandingPage = () => {
           onNext={handleNextStep}
         />
       )}
-    </>
+    </div>
   );
 };
 

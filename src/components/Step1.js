@@ -16,6 +16,11 @@ const Step1 = ({
 
   return (
     <div className="w-full h-[100vh] flex flex-col bg-transparent px-6 py-8">
+      {/* 뒤로 가기 버튼 */}
+      <button className="text-2xl absolute top-14 left-50" onClick={onPrev}>
+        ←
+      </button>
+
       {/* 제목 */}
       <h2 className="text-2xl font-bold text-black mt-40">
         학적 정보를 입력 해주세요
@@ -23,9 +28,9 @@ const Step1 = ({
 
       {/* 학교 이름*/}
       <div className="mt-8">
-        <label className="text-green-600 font-bold text-lg">학교 이름</label>
+        <label className="text-[#313C70] font-bold text-lg">학교 이름</label>
         <select
-          className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
+          className={`w-full border-b border-gray-400 outline-none mt-1 p-2 bg-transparent ${schoolName ? "text-black" : "text-gray-400"}`}
           value={schoolName}
           onChange={(e) => setSchoolName(e.target.value)}
         >
@@ -36,19 +41,14 @@ const Step1 = ({
           <option value="도남 초등학교">도남 초등학교</option>
           <option value="오라 초등학교">오라 초등학교</option>
         </select>
-        <p
-          className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${schoolName ? "opacity-0 invisible" : "opacity-100 visible"}`}
-        >
-          학교를 선택해 주세요
-        </p>
       </div>
 
       {/* 학년 & 반 (두 개 나란히 배치) */}
       <div className="mt-6 flex justify-between">
         <div className="w-[48%]">
-          <label className="text-green-600 font-bold text-lg">학년</label>
+          <label className="text-[#313C70] font-bold text-lg">학년</label>
           <select
-            className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
+            className={`w-full border-b border-gray-400 outline-none mt-1 p-2 bg-transparent ${grade ? "text-black" : "text-gray-400"}`}
             value={grade}
             onChange={(e) => setGrade(e.target.value)}
           >
@@ -61,17 +61,12 @@ const Step1 = ({
               </option>
             ))}
           </select>
-          <p
-            className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${grade ? "opacity-0 invisible" : "opacity-100 visible"}`}
-          >
-            학년을 선택해 주세요
-          </p>
         </div>
 
         <div className="w-[48%]">
-          <label className="text-green-600 font-bold text-lg">반</label>
+          <label className="text-[#313C70] font-bold text-lg">반</label>
           <select
-            className="w-full border-b border-gray-400 outline-none mt-2 p-2 bg-transparent"
+            className={`w-full border-b border-gray-400 outline-none mt-1 p-2 bg-transparent ${classNumber ? "text-black" : "text-gray-400"}`}
             value={classNumber}
             onChange={(e) => setClassNumber(e.target.value)}
           >
@@ -84,11 +79,6 @@ const Step1 = ({
               </option>
             ))}
           </select>
-          <p
-            className={`text-red-500 text-xs mt-1 font-medium h-5 transition-opacity duration-500 ${classNumber ? "opacity-0 invisible" : "opacity-100 visible"}`}
-          >
-            반을 선택해 주세요
-          </p>
         </div>
       </div>
 

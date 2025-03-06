@@ -1,16 +1,16 @@
 @keyframes bg-shake {
   0% {
-    background-position: 0% 50%;
+    background-position: 0% 60%;
   }
   50% {
-    background-position: 100% 50%;
+    background-position: 100% 40%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0% 60%;
   }
 }
 
 .animate-bg-shake {
-  animation: bg-shake 5s ease infinite;
-  background-size: 200% 200%;
+  animation: bg-shake 10s ease infinite;
+  background-size: 250% 250%;
 }

@@ -9,11 +9,15 @@ import happyEmoji from "../assets/icons/Image-2.svg";
 import hereEmoji from "../assets/icons/Image.svg";
 import LoadingBubble from "../components/LoadingBubble";
 import PaperPlaneAnimation from "../components/emailDone";
+import { motion } from "framer-motion";
 
 // 말풍선 컴포넌트
 const ChatBubble = ({ sender, text, type, image, isHtml }) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: "spring", stiffness: 50, damping: 20 }}
       className={`flex w-full ${type === "sent" ? "justify-end" : "justify-start"} mb-2`}
     >
       <div
@@ -47,7 +51,7 @@ const ChatBubble = ({ sender, text, type, image, isHtml }) => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

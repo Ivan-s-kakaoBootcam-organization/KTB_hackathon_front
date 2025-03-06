@@ -3,9 +3,14 @@ import { useLocation } from "react-router-dom";
 import { FiX } from "react-icons/fi";
 import sendIcon from "../assets/icons/Iconly/Send.svg";
 import uploadIcon from "../assets/icons/Iconly/Folder.svg";
-import emoji from "../assets/icons/Image-1.svg";
+import sadEmoji from "../assets/icons/Image-1.svg";
+import happyEmoji from "../assets/icons/Image-2.svg";
+// import noEmoji from "../assets/icons/Image-3.svg";
+import hereEmoji from "../assets/icons/Image.svg";
+import LoadingBubble from "../components/LoadingBubble";
 
-const ChatBubble = ({ sender, text, type, image }) => {
+// 말풍선 컴포넌트
+const ChatBubble = ({ sender, text, type, image, isHtml }) => {
   return (
     <div
       className={`flex w-full ${type === "sent" ? "justify-end" : "justify-start"} mb-2`}
@@ -19,11 +24,18 @@ const ChatBubble = ({ sender, text, type, image }) => {
       >
         <div className="flex items-start gap-3">
           {type !== "sent" && (
-            <img src={emoji} alt="Avatar" className="w-8 h-8" />
+            <img src={happyEmoji} alt="Avatar" className="w-8 h-8" />
           )}
           <div className="flex flex-col">
             {type !== "sent" && <p className="font-bold">{sender}</p>}
-            <p className="text-sm leading-relaxed">{text}</p>
+            {isHtml ? (
+              <p
+                className="text-sm leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: text }}
+              />
+            ) : (
+              <p className="text-sm leading-relaxed">{text}</p>
+            )}
             {image && (
               <img
                 src={image}
@@ -38,11 +50,12 @@ const ChatBubble = ({ sender, text, type, image }) => {
   );
 };
 
+// 종료 시 호출되는 메시지 컴포넌트
 const LastMessage = ({ onGoodClick, onBadClick }) => {
   return (
     <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
       {/* 이모지 */}
-      <img src={emoji} alt="Emoji" className="w-8 h-8" />
+      <img src={hereEmoji} alt="Emoji" className="w-8 h-8" />
 
       {/* 메시지 컨텐츠 */}
       <div className="flex flex-col">
@@ -69,11 +82,12 @@ const LastMessage = ({ onGoodClick, onBadClick }) => {
   );
 };
 
-const RequestMessage = () => {
+// 요청 시 호출되는 메시지 컴포넌트
+const RequestMessage = ({ setRequestType }) => {
   return (
     <div className="flex items-start gap-3 bg-gray-100 rounded-2xl p-4 w-fit max-w-[80%] shadow mb-4">
       {/* 이모지 */}
-      <img src={emoji} alt="Emoji" className="w-8 h-8" />
+      <img src={sadEmoji} alt="Emoji" className="w-8 h-8" />
 
       {/* 메시지 컨텐츠 */}
       <div className="flex flex-col">
@@ -88,13 +102,13 @@ const RequestMessage = () => {
         <div className="flex gap-3 mt-3">
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={() => alert("전화 연결")}
+            onClick={() => setRequestType("전화")}
           >
             전화
           </button>
           <button
             className="px-4 py-2 bg-gray-200 rounded-full text-xs font-semibold shadow-sm"
-            onClick={() => alert("문자 보내기")}
+            onClick={() => setRequestType("문자")}
           >
             개인면담
           </button>
@@ -104,6 +118,7 @@ const RequestMessage = () => {
   );
 };
 
+// 채팅 페이지 컴포넌트
 const ChatPage = () => {
   const location = useLocation();
   const { email, schoolName, grade, classNumber, studentName } =
@@ -111,6 +126,9 @@ const ChatPage = () => {
 
   const [input, setInput] = useState("");
   const [image, setImage] = useState(null); // 이미지 상태 추가
+  const [requestType, setRequestType] = useState(""); // 학부모 요청 타입
+  const [endOfChat, setEndOfChat] = useState(false);
+  const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -129,17 +147,31 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // 챗봇의 응답을 생성하는 함수
-  const getBotResponse = (userInput) => {
-    if (userInput.includes("공부")) return "네, 오늘도 열심히 공부했습니다!";
-    if (userInput.includes("자고"))
-      return "음... 수업 중에 졸았다면 선생님께서 따로 말씀해 주실 거예요.";
-    if (userInput.includes("번호")) return "선생님 번호는 알려드릴 수 없어요!";
-    return "죄송해요, 잘 이해하지 못했어요. 다시 한번 말씀해 주세요.";
-  };
+  // requestType 상태가 변경될 때 특정 행동을 트리거
+  useEffect(() => {
+    if (requestType) {
+      processChat();
+    }
+  }, [requestType]);
+
+  // endOfChat 상태가 true로 변경될 때 특정 행동을 트리거
+  useEffect(() => {
+    if (endOfChat) {
+      // 채팅 종료 메시지를 추가
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          id: prevMessages.length + 1,
+          sender: "시스템",
+          text: "채팅이 종료되었습니다.",
+          type: "system",
+        },
+      ]);
+    }
+  }, [endOfChat]);
 
   // 메시지 전송 함수
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (input.trim() === "" && !image) return;
 
     const userMessage = {
@@ -158,6 +190,8 @@ const ChatPage = () => {
       textareaRef.current.style.height = "auto";
     }
 
+    setLoading(true);
+
     // 특정 키워드 입력 시 `LastMessage` 트리거
     if (input.includes("/종료")) {
       setTimeout(() => {
@@ -165,23 +199,51 @@ const ChatPage = () => {
           ...prevMessages,
           {
             id: prevMessages.length + 1,
+            sender: "민지 선생님",
             text: "답변하신 내용은 만족스러우신가요?",
             type: "last",
           },
         ]);
+        setLoading(false);
       }, 1000);
     } else {
-      // 챗봇 응답 추가 (1초 후)
-      setTimeout(() => {
-        const botResponse = getBotResponse(input);
+      try {
+        const response = await fetch("http://54.180.120.69:3001/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: input,
+            studentInfo: { grade, class: classNumber, name: studentName },
+          }),
+        });
+
+        if (!response.ok) throw new Error("서버 응답 오류");
+
+        const data = await response.json();
+
+        let combinedResponse = data.response.replace(/\n/g, "<br>");
+
+        if (data.relevantLinks && data.relevantLinks.length > 0) {
+          combinedResponse += "<br><br>📌 관련 링크:";
+          data.relevantLinks.forEach((link) => {
+            combinedResponse += `<br>🔗 <a href='${link.url}' target='_blank' rel='noopener noreferrer' class='text-blue-500 underline break-all'>${link.title}</a>`;
+          });
+        }
+
         const botMessage = {
           id: messages.length + 2,
           sender: "민지 선생님",
-          text: botResponse,
+          text: combinedResponse,
           type: "received",
+          isHtml: true,
         };
+
         setMessages((prevMessages) => [...prevMessages, botMessage]);
-      }, 1000);
+      } catch (error) {
+        console.error("메시지 전송 오류:", error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -217,6 +279,12 @@ const ChatPage = () => {
     }
   };
 
+  const handleTextareaClick = () => {
+    if (endOfChat) {
+      window.location.reload();
+    }
+  };
+
   const showRequestMessage = () => {
     setMessages((prevMessages) => [
       ...prevMessages,
@@ -230,9 +298,101 @@ const ChatPage = () => {
 
   // 대화 내용을 변수에 저장하는 함수
   const saveMessagesToVariable = () => {
-    const chatHistory = messages;
-    return JSON.stringify(chatHistory, null, 2);
-    // alert(JSON.stringify(chatHistory, null, 2)); // 대화 내용을 alert로 표시
+    const chatHistory = messages.map((msg) => ({
+      sender: msg.sender,
+      text: msg.text,
+    }));
+    console.log(JSON.stringify(chatHistory, null, 2));
+    return chatHistory;
+  };
+
+  const processChat = async () => {
+    const convo = saveMessagesToVariable();
+    // 대화 내용 요약 API 호출
+    const summarizedResponse = await fetch(
+      "http://54.180.120.69:3001/api/summarize-conversation",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversation: convo,
+          studentInfo: { grade, class: classNumber, name: studentName },
+        }),
+      }
+    );
+
+    if (!summarizedResponse.ok) throw new Error("서버 응답 오류");
+
+    const summarizedData = await summarizedResponse.json();
+
+    console.log(summarizedData);
+
+    // 대화 내용 분류 API 호출
+    const classifiedResponse = await fetch(
+      "http://54.180.120.69:3001/api/classify-conversation",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversation: convo,
+          studentInfo: { grade, class: classNumber, name: studentName },
+        }),
+      }
+    );
+
+    if (!classifiedResponse.ok) throw new Error("서버 응답 오류");
+
+    const classifiedData = await classifiedResponse.json();
+
+    console.log(classifiedData);
+
+    // 이메일 전송 API 호출
+    const formData = new FormData();
+    formData.append(
+      "studentInfo",
+      JSON.stringify({ grade, class: classNumber, name: studentName })
+    );
+    formData.append("conversation", JSON.stringify(convo));
+    formData.append("status", classifiedData.status);
+    formData.append("requestType", requestType);
+    formData.append(
+      "summary",
+      JSON.stringify({
+        topic: summarizedData.summary.topic,
+        keyPoints: summarizedData.summary.keyPoints,
+      })
+    );
+    formData.append("teacherEmail", email);
+    formData.append("image", image);
+
+    console.log(
+      JSON.stringify({ grade, class: classNumber, name: studentName }),
+      JSON.stringify(convo),
+      classifiedData.status,
+      requestType,
+      JSON.stringify({
+        topic: summarizedData.summary.topic,
+        keyPoints: summarizedData.summary.keyPoints,
+      }),
+      email
+    );
+
+    const emailResponse = await fetch(
+      "http://54.180.120.69:3001/api/send-email",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!emailResponse.ok) throw new Error("서버 응답 오류");
+
+    const emailData = await emailResponse.json();
+
+    console.log(emailData);
+
+    setEndOfChat(true);
+    return;
   };
 
   return (
@@ -243,12 +403,12 @@ const ChatPage = () => {
         <div className="fixed top-0 w-full max-w-[390px] bg-sky-200 text-black py-4 px-5 flex items-start justify-start z-10">
           <div className="flex flex-col ml-4">
             <h1 className="text-lg font-bold text-black-800">
-              {schoolName ? schoolName : "이도 초등학교"}
+              {schoolName || "이도 초등학교"}
             </h1>
             <span className="text-gray-700 text-sm">
-              {grade ? grade : "1"}학년 {classNumber ? classNumber : "1"}반{" "}
+              {grade || "1"}학년 {classNumber || "1"}반{" "}
               <span className="font-bold">
-                {studentName ? studentName : "이홍민"} 학부모
+                {studentName || "이홍민"} 학부모
               </span>
             </span>
           </div>
@@ -259,11 +419,11 @@ const ChatPage = () => {
             msg.type === "last" ? (
               <LastMessage
                 key={msg.id}
-                onGoodClick={() => alert("종료합니다")}
+                onGoodClick={() => processChat()}
                 onBadClick={() => showRequestMessage()}
               />
             ) : msg.type === "request" ? (
-              <RequestMessage key={msg.id} />
+              <RequestMessage key={msg.id} setRequestType={setRequestType} />
             ) : (
               <ChatBubble
                 key={msg.id}
@@ -271,8 +431,14 @@ const ChatPage = () => {
                 text={msg.text}
                 type={msg.type}
                 image={msg.image}
+                isHtml={msg.isHtml}
               />
             )
+          )}
+          {loading && (
+            <div className="flex justify-center items-center">
+              <LoadingBubble />
+            </div>
           )}
           <div ref={messagesEndRef} />
         </div>
@@ -292,18 +458,20 @@ const ChatPage = () => {
             <textarea
               ref={textareaRef}
               rows="1"
-              placeholder="민지 선생님에게 의견을 들려주세요"
+              placeholder={
+                endOfChat
+                  ? "채팅이 종료되었습니다."
+                  : "민지 선생님에게 의견을 들려주세요"
+              }
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent text-gray-700 placeholder-gray-400 outline-none resize-none text-sm"
+              onClick={handleTextareaClick}
             />
 
             {/* 전송 버튼 (SVG 이미지) */}
-            <button
-              onClick={() => alert("메시지 전송")}
-              className="text-gray-600"
-            >
+            <button onClick={() => sendMessage()} className="text-gray-600">
               <img src={sendIcon} alt="Send" className="w-6 h-6" />
             </button>
           </div>

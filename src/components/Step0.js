@@ -26,21 +26,28 @@ const Step0 = ({ email, setEmail, onNext }) => {
   };
 
   return (
-    <div className="w-full h-[100vh] flex flex-col justify-between items-center bg-gradient-to-b from-sky-300 to-sky-200 p-6">
-      {/* 메인 컨텐츠 */}
-      <div className="flex flex-col items-start w-full px-6 mt-40">
-        <h2 className="text-white text-5xl font-bold">민지(MINzI)</h2>
-        <p className="text-grey mt-1 text-lg">학부모 맞춤 민원 대응 챗봇</p>
+    <div className="relative w-full h-[100vh] flex flex-col justify-between items-center p-10">
+      {/* 헤더 */}
+      <div className="flex flex-col items-start w-full px-4 mt-40">
+        <h2
+          className="text-8xl font-black tracking-wide"
+          style={{ fontFamily: '"Fredoka", sans-serif' }}
+        >
+          <span className="text-blue-700">M</span>
+          <span className="text-white">IN</span>
+          <span className="text-blue-700">Z</span>
+          <span className="text-white">I</span>
+        </h2>
+        <p className="text-gray-200 mt-1 w-full px-5.5 text-lg">
+          학부모 맞춤 민원 대응 챗봇
+        </p>
       </div>
 
-      {/* 이메일 입력 섹션 */}
+      {/* 이메일 입력 */}
       <div className="w-full px-6">
         <label className="text-white font-semibold text-base">
           선생님 이메일 작성
         </label>
-        {validationMessage && (
-          <p className="text-red-500 text-xs mt-1">{validationMessage}</p>
-        )}{" "}
         <input
           type="email"
           className="w-full border-b border-white outline-none mt-2 p-2 bg-transparent text-white"
@@ -48,9 +55,16 @@ const Step0 = ({ email, setEmail, onNext }) => {
           value={email}
           onChange={handleEmailChange}
         />
+        <p
+          className={`text-red-400 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${
+            validationMessage ? "opacity-100 visible" : "opacity-0 invisible"
+          }`}
+        >
+          {validationMessage || ""}
+        </p>
       </div>
 
-      {/* 시작하기 버튼 */}
+      {/* 버튼 */}
       <SendButton
         text="시작하기"
         onClick={onNext}

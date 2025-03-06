@@ -41,9 +41,11 @@ const Step1 = ({
           <option value="도남 초등학교">도남 초등학교</option>
           <option value="오라 초등학교">오라 초등학교</option>
         </select>
-        {!schoolName && (
-          <p className="text-red-500 text-sm mt-1">❗ 학교를 선택해 주세요</p>
-        )}
+        <p
+          className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${schoolName ? "opacity-0 invisible" : "opacity-100 visible"}`}
+        >
+          ❗ 학교를 선택해 주세요
+        </p>
       </div>
 
       {/* 학년 & 반 (두 개 나란히 배치) */}
@@ -64,9 +66,11 @@ const Step1 = ({
               </option>
             ))}
           </select>
-          {!grade && (
-            <p className="text-red-500 text-sm mt-1">❗ 학년을 선택해 주세요</p>
-          )}
+          <p
+            className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${grade ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          >
+            ❗ 학년을 선택해 주세요
+          </p>
         </div>
 
         <div className="w-[48%]">
@@ -85,9 +89,11 @@ const Step1 = ({
               </option>
             ))}
           </select>
-          {!classNumber && (
-            <p className="text-red-500 text-sm mt-1">❗ 반을 선택해 주세요</p>
-          )}
+          <p
+            className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${classNumber ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          >
+            ❗ 반을 선택해 주세요
+          </p>
         </div>
       </div>
 

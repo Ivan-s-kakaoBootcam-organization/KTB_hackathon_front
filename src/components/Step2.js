@@ -18,11 +18,12 @@ const Step2 = ({ studentName, setStudentName, onPrev, onNext }) => {
         {/* 학생 이름 입력 */}
         <div className="mt-6">
           <label className="text-green-600 font-bold text-lg">학생 이름</label>
-          {!studentName && (
-            <p className="text-red-500 text-sm mt-1">
-              ❗ 학생 이름을 입력해 주세요
-            </p>
-          )}
+          {/* 헬퍼 텍스트 (부드럽게 사라지고 위치 유지) */}
+          <p
+            className={`text-red-500 text-sm mt-1 font-medium h-5 transition-opacity duration-500 ${studentName ? "opacity-0 invisible" : "opacity-100 visible"}`}
+          >
+            ❗ 학생 이름을 입력해 주세요
+          </p>
 
           <input
             type="text"

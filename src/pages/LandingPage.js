@@ -58,11 +58,11 @@ const LandingPage = () => {
       {!showStep0 && (
         <>
           <motion.div
-            initial={{ scale: 1.2, opacity: 1 }}
+            initial={{ scale: 1, opacity: 1 }}
             animate={{ opacity: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2.5, delay: 6 }}
-            className="absolute bottom-[-50px] w-full flex justify-center z-20"
+            className="absolute bottom-[-130px] w-full flex justify-center z-20"
           >
             <img src={TeacherImage} alt="Loading" className="transform" />
           </motion.div>

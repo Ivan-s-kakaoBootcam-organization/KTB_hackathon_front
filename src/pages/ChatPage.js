@@ -26,6 +26,7 @@ const ChatBubble = ({ sender, text, type, image, isHtml }) => {
             ? "bg-blue-500 text-white rounded-tr-none"
             : "item-start bg-gray-100 text-black rounded-tl-none"
         }`}
+        style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
       >
         <div className="flex items-start gap-3">
           {type !== "sent" && (

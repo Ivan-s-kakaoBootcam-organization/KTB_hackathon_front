@@ -227,7 +227,7 @@ const ChatPage = () => {
       }, 1000);
     } else {
       try {
-        const response = await fetch("http://54.180.120.69:3001/api/chat", {
+        const response = await fetch("http://52.79.135.83:3001/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -332,7 +332,7 @@ const ChatPage = () => {
 
     // 대화 내용 요약 API 호출
     const summarizedResponse = await fetch(
-      "http://54.180.120.69:3001/api/summarize-conversation",
+      "http://52.79.135.83:3001/api/summarize-conversation",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -351,7 +351,7 @@ const ChatPage = () => {
 
     // 대화 내용 분류 API 호출
     const classifiedResponse = await fetch(
-      "http://54.180.120.69:3001/api/classify-conversation",
+      "http://52.79.135.83:3001/api/classify-conversation",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -388,7 +388,7 @@ const ChatPage = () => {
     formData.append("image", image);
 
     const emailResponse = await fetch(
-      "http://54.180.120.69:3001/api/send-email",
+      "http://52.79.135.83:3001/api/send-email",
       {
         method: "POST",
         body: formData,
